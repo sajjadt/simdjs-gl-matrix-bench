@@ -148,7 +148,7 @@ var tests = [
       var out = new Float32Array(16);
       var start = Date.now();
       for (var i = 0; i < count; ++i) {
-        mat4.scalar.adjoint(out, m);
+        mat4.scalar.multiply(out, m, m);
       }
       return Date.now()-start;
   },
@@ -157,7 +157,7 @@ var tests = [
       var out = new Float32Array(16);
       var start = Date.now();
       for (var i = 0; i < count; ++i) {
-          mat4.SIMD.adjoint(out, m);
+          mat4.SIMD.multiply(out, m, m);
       }
       return Date.now()-start;
  }
