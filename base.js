@@ -166,18 +166,13 @@ var tests = [
 function runTest(name, f) {
 
   var totalTime = 0;
-  var minTime = 0;
-  var maxTime = 0;
+  var minTime = +Infinity;
+  var maxTime = -Infinity;
 
   for(var i = 0; i < config.runCount; ++i) {
     var time = f(config.internalRunCount);
-    if(i == 0) {
-      minTime = time;
-      maxTime = time;
-    } else {
-      if(minTime > time) { minTime = time; }
-      if(maxTime < time) { maxTime = time; }
-    }
+    minTime = Math.min(minTime, time);
+    maxTime = Math.max(maxTime, time);
     totalTime += time;
   }
 
