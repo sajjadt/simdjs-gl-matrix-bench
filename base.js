@@ -36,6 +36,7 @@ var tests = [
         return time;
    }
  },
+ /*
   { name : 'Scale',
     scalarFunc: function(count) {
         var m = mat4.random();
@@ -166,7 +167,7 @@ var tests = [
       }
       return Date.now()-start;
  }
-}];
+}*/];
 
 function runTest(name, f) {
 
@@ -192,7 +193,7 @@ function runTest(name, f) {
 
 function runTests(kernels) {
     for(var i = 0; i < kernels.length; ++i){
-        runTest(kernels[i].name + " (Scalar)", kernels[i].scalarFunc);
+        //runTest(kernels[i].name + " (Scalar)", kernels[i].scalarFunc);
         runTest(kernels[i].name + " (SIMD)", kernels[i].simdFunc);
     }
 }
