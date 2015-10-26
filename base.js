@@ -7,28 +7,33 @@ mat4.random = function() {
 
 var config = {
     runCount : 20,
-    internalRunCount : 500000
+    internalRunCount : 500000,
+    numMatrices: 500
 }
 
 var tests = [
   { name : 'Invert',
-    scalarFunc: function(count) {
-        var m = mat4.random();
+    scalarFunc: function(count, matrices) {
         var out = new Float32Array(16);
-        var start = Date.now();
+        var time = 0;
         for (var i = 0; i < count; ++i) {
+            var m = matrices[i % matrices.length]
+            var start = Date.now();
             mat4.scalar.invert(out, m);
+            time += Date.now() - start;
         }
-        return Date.now()-start;
+        return time;
     },
-    simdFunc: function(count) {
-        var m = mat4.random();
+    simdFunc: function(count, matrices) {
         var out = new Float32Array(16);
-        var start = Date.now();
+        var time = 0;
         for (var i = 0; i < count; ++i) {
+            var start = Date.now();
+            var m = matrices[i % matrices.length]
             mat4.SIMD.invert(out, m);
+            time += Date.now() - start;
         }
-        return Date.now()-start;
+        return time;
    }
  },
   { name : 'Scale',
@@ -169,8 +174,13 @@ function runTest(name, f) {
   var minTime = +Infinity;
   var maxTime = -Infinity;
 
+  var matrices = [];
+  for (var i = 0; i < config.numMatrices; ++i) {
+      matrices[i] = mat4.random();
+  }
+
   for(var i = 0; i < config.runCount; ++i) {
-    var time = f(config.internalRunCount);
+    var time = f(config.internalRunCount, matrices);
     minTime = Math.min(minTime, time);
     maxTime = Math.max(maxTime, time);
     totalTime += time;
