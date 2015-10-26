@@ -1682,91 +1682,98 @@ return /******/ (function(modules) { // webpackBootstrap
 	      tmp1,
 	      minor0, minor1, minor2, minor3,
 	      det,
-	      a0 = SIMD.Float32x4.load(a, 0),
-	      a1 = SIMD.Float32x4.load(a, 4),
-	      a2 = SIMD.Float32x4.load(a, 8),
-	      a3 = SIMD.Float32x4.load(a, 12);
+          LOAD = SIMD.Float32x4.load,
+          STORE = SIMD.Float32x4.store,
+          SH = SIMD.Float32x4.shuffle,
+          SW = SIMD.Float32x4.swizzle,
+          SUB = SIMD.Float32x4.sub,
+          ADD = SIMD.Float32x4.add,
+          M = SIMD.Float32x4.mul;
+	  var a0 = LOAD(a, 0),
+	      a1 = LOAD(a, 4),
+	      a2 = LOAD(a, 8),
+	      a3 = LOAD(a, 12);
 
 	  // Compute matrix adjugate
-	  tmp1 = SIMD.Float32x4.shuffle(a0, a1, 0, 1, 4, 5);
-	  row1 = SIMD.Float32x4.shuffle(a2, a3, 0, 1, 4, 5);
-	  row0 = SIMD.Float32x4.shuffle(tmp1, row1, 0, 2, 4, 6);
-	  row1 = SIMD.Float32x4.shuffle(row1, tmp1, 1, 3, 5, 7);
-	  tmp1 = SIMD.Float32x4.shuffle(a0, a1, 2, 3, 6, 7);
-	  row3 = SIMD.Float32x4.shuffle(a2, a3, 2, 3, 6, 7);
-	  row2 = SIMD.Float32x4.shuffle(tmp1, row3, 0, 2, 4, 6);
-	  row3 = SIMD.Float32x4.shuffle(row3, tmp1, 1, 3, 5, 7);
+	  tmp1 = SH(a0, a1, 0, 1, 4, 5);
+	  row1 = SH(a2, a3, 0, 1, 4, 5);
+	  row0 = SH(tmp1, row1, 0, 2, 4, 6);
+	  row1 = SH(row1, tmp1, 1, 3, 5, 7);
+	  tmp1 = SH(a0, a1, 2, 3, 6, 7);
+	  row3 = SH(a2, a3, 2, 3, 6, 7);
+	  row2 = SH(tmp1, row3, 0, 2, 4, 6);
+	  row3 = SH(row3, tmp1, 1, 3, 5, 7);
 
-	  tmp1   = SIMD.Float32x4.mul(row2, row3);
-	  tmp1   = SIMD.Float32x4.swizzle(tmp1, 1, 0, 3, 2);
-	  minor0 = SIMD.Float32x4.mul(row1, tmp1);
-	  minor1 = SIMD.Float32x4.mul(row0, tmp1);
-	  tmp1   = SIMD.Float32x4.swizzle(tmp1, 2, 3, 0, 1);
-	  minor0 = SIMD.Float32x4.sub(SIMD.Float32x4.mul(row1, tmp1), minor0);
-	  minor1 = SIMD.Float32x4.sub(SIMD.Float32x4.mul(row0, tmp1), minor1);
-	  minor1 = SIMD.Float32x4.swizzle(minor1, 2, 3, 0, 1);
+	  tmp1   = M(row2, row3);
+	  tmp1   = SW(tmp1, 1, 0, 3, 2);
+	  minor0 = M(row1, tmp1);
+	  minor1 = M(row0, tmp1);
+	  tmp1   = SW(tmp1, 2, 3, 0, 1);
+	  minor0 = SUB(M(row1, tmp1), minor0);
+	  minor1 = SUB(M(row0, tmp1), minor1);
+	  minor1 = SW(minor1, 2, 3, 0, 1);
 
-	  tmp1   = SIMD.Float32x4.mul(row1, row2);
-	  tmp1   = SIMD.Float32x4.swizzle(tmp1, 1, 0, 3, 2);
-	  minor0 = SIMD.Float32x4.add(SIMD.Float32x4.mul(row3, tmp1), minor0);
-	  minor3 = SIMD.Float32x4.mul(row0, tmp1);
-	  tmp1   = SIMD.Float32x4.swizzle(tmp1, 2, 3, 0, 1);
-	  minor0 = SIMD.Float32x4.sub(minor0, SIMD.Float32x4.mul(row3, tmp1));
-	  minor3 = SIMD.Float32x4.sub(SIMD.Float32x4.mul(row0, tmp1), minor3);
-	  minor3 = SIMD.Float32x4.swizzle(minor3, 2, 3, 0, 1);
+	  tmp1   = M(row1, row2);
+	  tmp1   = SW(tmp1, 1, 0, 3, 2);
+	  minor0 = ADD(M(row3, tmp1), minor0);
+	  minor3 = M(row0, tmp1);
+	  tmp1   = SW(tmp1, 2, 3, 0, 1);
+	  minor0 = SUB(minor0, M(row3, tmp1));
+	  minor3 = SUB(M(row0, tmp1), minor3);
+	  minor3 = SW(minor3, 2, 3, 0, 1);
 
-	  tmp1   = SIMD.Float32x4.mul(SIMD.Float32x4.swizzle(row1, 2, 3, 0, 1), row3);
-	  tmp1   = SIMD.Float32x4.swizzle(tmp1, 1, 0, 3, 2);
-	  row2   = SIMD.Float32x4.swizzle(row2, 2, 3, 0, 1);
-	  minor0 = SIMD.Float32x4.add(SIMD.Float32x4.mul(row2, tmp1), minor0);
-	  minor2 = SIMD.Float32x4.mul(row0, tmp1);
-	  tmp1   = SIMD.Float32x4.swizzle(tmp1, 2, 3, 0, 1);
-	  minor0 = SIMD.Float32x4.sub(minor0, SIMD.Float32x4.mul(row2, tmp1));
-	  minor2 = SIMD.Float32x4.sub(SIMD.Float32x4.mul(row0, tmp1), minor2);
-	  minor2 = SIMD.Float32x4.swizzle(minor2, 2, 3, 0, 1);
+	  tmp1   = M(SW(row1, 2, 3, 0, 1), row3);
+	  tmp1   = SW(tmp1, 1, 0, 3, 2);
+	  row2   = SW(row2, 2, 3, 0, 1);
+	  minor0 = ADD(M(row2, tmp1), minor0);
+	  minor2 = M(row0, tmp1);
+	  tmp1   = SW(tmp1, 2, 3, 0, 1);
+	  minor0 = SUB(minor0, M(row2, tmp1));
+	  minor2 = SUB(M(row0, tmp1), minor2);
+	  minor2 = SW(minor2, 2, 3, 0, 1);
 
-	  tmp1   = SIMD.Float32x4.mul(row0, row1);
-	  tmp1   = SIMD.Float32x4.swizzle(tmp1, 1, 0, 3, 2);
-	  minor2 = SIMD.Float32x4.add(SIMD.Float32x4.mul(row3, tmp1), minor2);
-	  minor3 = SIMD.Float32x4.sub(SIMD.Float32x4.mul(row2, tmp1), minor3);
-	  tmp1   = SIMD.Float32x4.swizzle(tmp1, 2, 3, 0, 1);
-	  minor2 = SIMD.Float32x4.sub(SIMD.Float32x4.mul(row3, tmp1), minor2);
-	  minor3 = SIMD.Float32x4.sub(minor3, SIMD.Float32x4.mul(row2, tmp1));
+	  tmp1   = M(row0, row1);
+	  tmp1   = SW(tmp1, 1, 0, 3, 2);
+	  minor2 = ADD(M(row3, tmp1), minor2);
+	  minor3 = SUB(M(row2, tmp1), minor3);
+	  tmp1   = SW(tmp1, 2, 3, 0, 1);
+	  minor2 = SUB(M(row3, tmp1), minor2);
+	  minor3 = SUB(minor3, M(row2, tmp1));
 
-	  tmp1   = SIMD.Float32x4.mul(row0, row3);
-	  tmp1   = SIMD.Float32x4.swizzle(tmp1, 1, 0, 3, 2);
-	  minor1 = SIMD.Float32x4.sub(minor1, SIMD.Float32x4.mul(row2, tmp1));
-	  minor2 = SIMD.Float32x4.add(SIMD.Float32x4.mul(row1, tmp1), minor2);
-	  tmp1   = SIMD.Float32x4.swizzle(tmp1, 2, 3, 0, 1);
-	  minor1 = SIMD.Float32x4.add(SIMD.Float32x4.mul(row2, tmp1), minor1);
-	  minor2 = SIMD.Float32x4.sub(minor2, SIMD.Float32x4.mul(row1, tmp1));
+	  tmp1   = M(row0, row3);
+	  tmp1   = SW(tmp1, 1, 0, 3, 2);
+	  minor1 = SUB(minor1, M(row2, tmp1));
+	  minor2 = ADD(M(row1, tmp1), minor2);
+	  tmp1   = SW(tmp1, 2, 3, 0, 1);
+	  minor1 = ADD(M(row2, tmp1), minor1);
+	  minor2 = SUB(minor2, M(row1, tmp1));
 
-	  tmp1   = SIMD.Float32x4.mul(row0, row2);
-	  tmp1   = SIMD.Float32x4.swizzle(tmp1, 1, 0, 3, 2);
-	  minor1 = SIMD.Float32x4.add(SIMD.Float32x4.mul(row3, tmp1), minor1);
-	  minor3 = SIMD.Float32x4.sub(minor3, SIMD.Float32x4.mul(row1, tmp1));
-	  tmp1   = SIMD.Float32x4.swizzle(tmp1, 2, 3, 0, 1);
-	  minor1 = SIMD.Float32x4.sub(minor1, SIMD.Float32x4.mul(row3, tmp1));
-	  minor3 = SIMD.Float32x4.add(SIMD.Float32x4.mul(row1, tmp1), minor3);
+	  tmp1   = M(row0, row2);
+	  tmp1   = SW(tmp1, 1, 0, 3, 2);
+	  minor1 = ADD(M(row3, tmp1), minor1);
+	  minor3 = SUB(minor3, M(row1, tmp1));
+	  tmp1   = SW(tmp1, 2, 3, 0, 1);
+	  minor1 = SUB(minor1, M(row3, tmp1));
+	  minor3 = ADD(M(row1, tmp1), minor3);
 
 	  // Compute matrix determinant
-	  det   = SIMD.Float32x4.mul(row0, minor0);
-	  det   = SIMD.Float32x4.add(SIMD.Float32x4.swizzle(det, 2, 3, 0, 1), det);
-	  det   = SIMD.Float32x4.add(SIMD.Float32x4.swizzle(det, 1, 0, 3, 2), det);
+	  det   = M(row0, minor0);
+	  det   = ADD(SW(det, 2, 3, 0, 1), det);
+	  det   = ADD(SW(det, 1, 0, 3, 2), det);
 	  tmp1  = SIMD.Float32x4.reciprocalApproximation(det);
-	  det   = SIMD.Float32x4.sub(
-	               SIMD.Float32x4.add(tmp1, tmp1),
-	               SIMD.Float32x4.mul(det, SIMD.Float32x4.mul(tmp1, tmp1)));
-	  det   = SIMD.Float32x4.swizzle(det, 0, 0, 0, 0);
+	  det   = SUB(
+	               ADD(tmp1, tmp1),
+	               M(det, M(tmp1, tmp1)));
+	  det   = SW(det, 0, 0, 0, 0);
 	  if (!det) {
 	      return null;
 	  }
 
 	  // Compute matrix inverse
-	  SIMD.Float32x4.store(out, 0,  SIMD.Float32x4.mul(det, minor0));
-	  SIMD.Float32x4.store(out, 4,  SIMD.Float32x4.mul(det, minor1));
-	  SIMD.Float32x4.store(out, 8,  SIMD.Float32x4.mul(det, minor2));
-	  SIMD.Float32x4.store(out, 12, SIMD.Float32x4.mul(det, minor3));
+	  STORE(out, 0,  SIMD.Float32x4.mul(det, minor0));
+	  STORE(out, 4,  SIMD.Float32x4.mul(det, minor1));
+	  STORE(out, 8,  SIMD.Float32x4.mul(det, minor2));
+	  STORE(out, 12, SIMD.Float32x4.mul(det, minor3));
 	  return out;
 	}
 
