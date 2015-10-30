@@ -5,8 +5,10 @@
 	<head>
 		<title>gl-matrix SIMD Benchmark</title>
 		<script type="text/javascript" src="./gl-matrix.js"></script>
-    <script  type="text/javascript" src="./base.js"></script>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/seedrandom/2.4.0/seedrandom.min.js"></script>
+    <script type="text/javascript" src="./base.js"></script>
     <script type="text/javascript">
+				Math.seedrandom('SIMD.JS');
         if ('SIMD' in this)
             runTests(tests);
         else

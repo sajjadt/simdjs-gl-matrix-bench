@@ -7,167 +7,171 @@ mat4.random = function() {
 
 var config = {
     runCount : 20,
-    internalRunCount : 500000,
-    numMatrices: 500
+    internalRunCount : 250000,
+    matrices : []
 }
 
 var tests = [
   { name : 'Invert',
     scalarFunc: function(count, matrices) {
         var out = new Float32Array(16);
-        var time = 0;
+        var m = matrices[0];
+        var start = performance.now();
         for (var i = 0; i < count; ++i) {
-            var m = matrices[i % matrices.length]
-            var start = Date.now();
             mat4.scalar.invert(out, m);
-            time += Date.now() - start;
         }
-        return time;
+        return performance.now() - start;
     },
     simdFunc: function(count, matrices) {
         var out = new Float32Array(16);
-        var time = 0;
+        var m = matrices[0];
+        var start = performance.now();
         for (var i = 0; i < count; ++i) {
-            var start = Date.now();
-            var m = matrices[i % matrices.length]
             mat4.SIMD.invert(out, m);
-            time += Date.now() - start;
         }
-        return time;
+        return performance.now() - start;
    }
  },
- /*
   { name : 'Scale',
-    scalarFunc: function(count) {
-        var m = mat4.random();
+    scalarFunc: function(count, matrices) {
         var out = new Float32Array(16);
         var v = new Float32Array(3);
-        v[0] = Math.random(); v[1] = Math.random(); v[2] = Math.random();;
-        var start = Date.now();
+        v[0] = 1.1; v[1] = 2.2; v[2] = 3.3;
+        var len = matrices.length;
+        var m = matrices[0];
+        var start = performance.now();
         for (var i = 0; i < count; ++i) {
-          mat4.scalar.scale(out, m, v);
+            mat4.scalar.scale(out, m, v);
         }
-        return Date.now()-start;
+        return performance.now() - start;
     },
-    simdFunc: function(count) {
-        var m = mat4.random();
+    simdFunc: function(count, matrices) {
         var out = new Float32Array(16);
         var v = new Float32Array(3);
-        v[0] = Math.random(); v[1] = Math.random(); v[2] = Math.random();;
-        var start = Date.now();
+        v[0] = 1.1; v[1] = 2.2; v[2] = 3.3;
+        var len = matrices.length;
+        var m = matrices[0];
+        var start = performance.now();
         for (var i = 0; i < count; ++i) {
             mat4.SIMD.scale(out, m, v);
         }
-        return Date.now()-start;
+        return performance.now() - start;
    }
   },
   { name : 'Adjoint',
-    scalarFunc: function(count) {
-        var m = mat4.random();
+    scalarFunc: function(count, matrices) {
         var out = new Float32Array(16);
-        var start = Date.now();
+        var len = matrices.length;
+        var m = matrices[0];
+        var start = performance.now();
         for (var i = 0; i < count; ++i) {
-          mat4.scalar.adjoint(out, m);
+            mat4.scalar.adjoint(out, m);
         }
-        return Date.now()-start;
+        return performance.now() - start;
     },
-    simdFunc: function(count) {
-        var m = mat4.random();
+    simdFunc: function(count, matrices) {
+        var time = 0;
         var out = new Float32Array(16);
-        var start = Date.now();
+        var len = matrices.length;
+        var m = matrices[0];
+        var start = performance.now();
         for (var i = 0; i < count; ++i) {
             mat4.SIMD.adjoint(out, m);
         }
-        return Date.now()-start;
+        return performance.now() - start;
    }
  },
 
 { name : 'Transpose',
-  scalarFunc: function(count) {
-      var m = mat4.random();
+  scalarFunc: function(count, matrices) {
       var out = new Float32Array(16);
-      var start = Date.now();
+      var len = matrices.length;
+      var m = matrices[0];
+      var start = performance.now();
       for (var i = 0; i < count; ++i) {
-        mat4.scalar.transpose(out, m);
+          mat4.scalar.transpose(out, m);
       }
-      return Date.now()-start;
+      return performance.now() - start;
   },
-  simdFunc: function(count){
-      var m = mat4.random();
+  simdFunc: function(count, matrices){
       var out = new Float32Array(16);
-      var start = Date.now();
+      var len = matrices.length;
+      var m = matrices[0];
+      var start = performance.now();
       for (var i = 0; i < count; ++i) {
           mat4.SIMD.transpose(out, m);
       }
-      return Date.now()-start;
+      return performance.now() - start;
  }
 },
 { name : 'Rotation (X-Axis)',
-  scalarFunc: function(count) {
-      var m = mat4.random();
+  scalarFunc: function(count, matrices) {
       var out = mat4.random();
       var a = Math.PI/6;
-      var start = Date.now();
+      var m = matrices[0];
+      var start = performance.now();
       for (var i = 0; i < count; ++i) {
-        mat4.scalar.rotateX(out, m, a);
+          mat4.scalar.rotateX(out, m, a);
       }
-      return Date.now()-start;
+      return performance.now() - start;
   },
-  simdFunc: function(count){
-      var m = mat4.random();
+  simdFunc: function(count, matrices){
       var out = new Float32Array(16);
       var a = Math.PI/6;
-      var start = Date.now();
+      var m = matrices[0];
+      var start = performance.now();
       for (var i = 0; i < count; ++i) {
           mat4.SIMD.rotateX(out, m, a);
       }
-      return Date.now()-start;
+      return performance.now() - start;
  }
  },
  { name : 'Translate',
-   scalarFunc: function(count) {
+   scalarFunc: function(count, matrices) {
        var out = new Float32Array(16);
-       var m = mat4.random();
        var v = new Float32Array(3);
        v[0] = Math.random(); v[1] = Math.random(); v[2] = Math.random();
-       var start = Date.now();
+       var m = matrices[0];
+       var start = performance.now();
        for (var i = 0; i < count; ++i) {
-         mat4.scalar.translate(out, m, v);
+           mat4.scalar.translate(out, m, v);
        }
-       return Date.now()-start;
+       return performance.now() - start;
    },
-   simdFunc: function(count){
+   simdFunc: function(count, matrices){
        var out = new Float32Array(16);
-       var m = mat4.random();
        var v = new Float32Array(3);
        v[0] = Math.random(); v[1] = Math.random(); v[2] = Math.random();
-       var start = Date.now();
+       var m = matrices[0];
+       var start = performance.now();
        for (var i = 0; i < count; ++i) {
            mat4.SIMD.translate(out, m, v);
        }
-       return Date.now()-start;
+       return performance.now() - start;
   }
 },
 { name : 'Multiply',
-  scalarFunc: function(count) {
-      var m = mat4.random();
+  scalarFunc: function(count, matrices) {
       var out = new Float32Array(16);
-      var start = Date.now();
+      var a = matrices[0];
+      var b = matrices[1];
+      start = performance.now();
       for (var i = 0; i < count; ++i) {
-        mat4.scalar.multiply(out, m, m);
+          mat4.scalar.multiply(out, a, b);
       }
-      return Date.now()-start;
+      return performance.now() - start;
   },
-  simdFunc: function(count){
-      var m = mat4.random();
+  simdFunc: function(count, matrices){
       var out = new Float32Array(16);
-      var start = Date.now();
+      var a = matrices[0];
+      var b = matrices[1];
+      start = performance.now();
       for (var i = 0; i < count; ++i) {
-          mat4.SIMD.multiply(out, m, m);
+          mat4.SIMD.multiply(out, a, b);
       }
-      return Date.now()-start;
+      return performance.now() - start;
  }
-}*/];
+}];
 
 function runTest(name, f) {
 
@@ -175,25 +179,29 @@ function runTest(name, f) {
   var minTime = +Infinity;
   var maxTime = -Infinity;
 
-  var matrices = [];
-  for (var i = 0; i < config.numMatrices; ++i) {
-      matrices[i] = mat4.random();
-  }
-
+  var times = [];
   for(var i = 0; i < config.runCount; ++i) {
-    var time = f(config.internalRunCount, matrices);
+    var time = f(config.internalRunCount, config.matrices);
     minTime = Math.min(minTime, time);
     maxTime = Math.max(maxTime, time);
     totalTime += time;
+    times[i] = time;
   }
 
-  var avg = totalTime / config.runCount;
-  console.log(name + ' - Avg: ' + avg + ' ms , Min: ' + minTime + ' ms, Max: ' + maxTime + ' ms');
+  var avgTime = totalTime / config.runCount;
+  return {min:minTime, max:maxTime, avg:avgTime, times:times};
 }
 
 function runTests(kernels) {
+
+    config.matrices[0] = mat4.random();
+    config.matrices[1] = mat4.random();
+
     for(var i = 0; i < kernels.length; ++i){
-        //runTest(kernels[i].name + " (Scalar)", kernels[i].scalarFunc);
-        runTest(kernels[i].name + " (SIMD)", kernels[i].simdFunc);
+        var scalarTime = runTest(kernels[i].name + "(Scalar)", kernels[i].scalarFunc);
+        var simdTime = runTest(kernels[i].name + "(SIMD)", kernels[i].simdFunc);
+        console.log(kernels[i].name, "scalar (min,avg,max): ", scalarTime.min, scalarTime.avg, scalarTime.max);
+        console.log(kernels[i].name, "SIMD (min,avg,max): ", simdTime.min, simdTime.avg, simdTime.max);
+        console.log(kernels[i].name, "avg speedup: ", scalarTime.avg/simdTime.avg);
     }
 }
